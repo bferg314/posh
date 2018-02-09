@@ -1,4 +1,4 @@
-# posh# How to configure powershell
+# How to configure powershell
 This is a copy and paste pileup of things that I am used to in bash.  
 
 ## Laying the groundwork  
