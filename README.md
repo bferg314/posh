@@ -60,7 +60,7 @@ Install-Module -Name 'Get-ChildItemColor' -Scope CurrentUser
 
 ## Add stuff to your profile
 Take what you want from here:
-https://raw.githubusercontent.com/bferg314/dotfiles/master/winscript/posh/Microsoft.PowerShell_profile.ps1
+https://raw.githubusercontent.com/bferg314/posh/master/profile/Microsoft.PowerShell_profile.ps1
 
 # Sources
 * https://www.howtogeek.com/50236/customizing-your-powershell-profile/  
