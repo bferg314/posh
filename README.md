@@ -66,3 +66,4 @@ https://raw.githubusercontent.com/bferg314/posh/master/profile/Microsoft.PowerSh
 * https://www.howtogeek.com/50236/customizing-your-powershell-profile/  
 * https://gist.github.com/jchandra74/5b0c94385175c7a8d1cb39bc5157365e  
 * https://github.com/AmrEldib/cmder-powershell-powerline-prompt  
+* https://hodgkins.io/ultimate-powershell-prompt-and-git-setup  
