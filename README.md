@@ -1,52 +1,26 @@
-# How to configure powershell
-This is a copy and paste pileup of things that I am used to in bash.  
+# How to configure PowerShell
+I have been using PowerShell daily for a while now, and here are the basic configurations for a fresh Win 10 build.
 
 ## Laying the groundwork  
-Do all of this in regular powershell before switching to cmder.
+Do all of this in Windows PowerShell, then you can switch to the console front end of your choice. I have been using the [Windows Terminal Preview](https://www.microsoft.com/en-us/p/windows-terminal-preview/9n0dx20hk701), and enjoy it so far. Prettier and simpler than cmder.
 
 ### Enable remote signed
 ```powershell
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-### Set the proxy (if required)
-```powershell
-(New-Object System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
-```
-
 ### Scoop
+Scoop is a wonderful way to manage all of your local software.
 ```powershell
-[environment]::setEnvironmentVariable('SCOOP','c:\apps\Scoop','User')
-$env:SCOOP='c:\apps\scoop'
 iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
+scoop install git aria2 mremoteng pshazz sharex telegram vim vscode
 scoop bucket add extras
 ```
 
 ### Create profile
+And then you need to set up a profile to do all the cool things you want to do.
 ```powershell
 New-Item -path $profile -type file –force
-```
-
-## Cmder Install
-It's really not a question of whether or not to install cmder, it's how. Depending on your environment you may want to install through scoop, or you may want to grab the full version from the site.
-
-#### Use scoop to install cmder
-```powershell
-scoop install 7zip git openssh cmder
-```
-
-#### Manually install
-Go the site and install the full version manually.  
-http://cmder.net/
-
-Then close the regular PowerShell...
-
-## Setting up cmder
-There are lots of little tweaks you can do, but there are really only two important ones for PowerShell.  
-* Set PowerShell as the default
-* Set the PowerShell tasks to use the profile you just created 
-```
-PowerShell -ExecutionPolicy Bypass -NoLogo -NoExit -NoProfile -Command "Invoke-Expression '. ''%USERPROFILE%\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1'''" -new_console:d:"%USERPROFILE%"
 ```
 
 ### Pull down some libs
