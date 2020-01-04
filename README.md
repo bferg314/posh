@@ -17,6 +17,13 @@ scoop install git aria2 mremoteng pshazz sharex telegram vim vscode
 scoop bucket add extras
 ```
 
+### Install PowerShell Core/PowerShell Preview 
+Just for fun, it is nice to have the latest versions around...
+```powershell
+iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI"
+iex "& { $(irm https://aka.ms/install-powershell.ps1) } -UseMSI -Preview"
+```
+
 ### Create profile
 And then you need to set up a profile to do all the cool things you want to do.
 ```powershell
@@ -40,4 +47,5 @@ https://raw.githubusercontent.com/bferg314/posh/master/profile/Microsoft.PowerSh
 * https://www.howtogeek.com/50236/customizing-your-powershell-profile/  
 * https://gist.github.com/jchandra74/5b0c94385175c7a8d1cb39bc5157365e  
 * https://github.com/AmrEldib/cmder-powershell-powerline-prompt  
-* https://hodgkins.io/ultimate-powershell-prompt-and-git-setup  
+* https://hodgkins.io/ultimate-powershell-prompt-and-git-setup
+* https://www.thomasmaurer.ch/2019/07/how-to-install-and-update-powershell-7/
