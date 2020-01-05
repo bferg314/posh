@@ -1,5 +1,18 @@
-# set proxy
-(New-Object System.Net.WebClient).Proxy.Credentials = [System.Net.CredentialCache]::DefaultNetworkCredentials
+# PowerShell Settings
+Set-PSReadLineOption -HistoryNoDuplicates:$True
+
+# Scripts on the Path
+$env:Path = "$env:Path;c:\git\posh\scripts;"
+
+# Custom Functions/Aliases
+# Easier Navigation: .., ..., ...., ....., and ~
+${function:~} = { Set-Location ~ }
+# PoSh won't allow ${function:..} because of an invalid path error, so...
+${function:Set-ParentLocation} = { Set-Location .. }; Set-Alias ".." Set-ParentLocation
+${function:...} = { Set-Location ..\.. }
+${function:....} = { Set-Location ..\..\.. }
+${function:.....} = { Set-Location ..\..\..\.. }
+${function:......} = { Set-Location ..\..\..\..\.. }
 
 # clear
 Set-Alias -name "c" -value "clear"
@@ -10,59 +23,29 @@ function QuitReplacement{
 }
 Set-Alias -Name "x" -Value "QuitReplacement"
 
-# vim
-Set-Alias -Name "vim" -Value "C:\apps\vim8\vim8\vim.exe"
-
-# edit PS profile
-Function e_ps {
-    vim $profile
+# make dir then cd
+function mc ($dir) {
+    New-Item -Name $dir -ItemType directory
+    Set-Location -Path $dir
 }
 
-# To edit Vim settings
-Function e_vim {
-    vim $HOME\.vimrc
+# reload instance
+function rc {
+    $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
+    $newProcess.Arguments = "-nologo";
+    [System.Diagnostics.Process]::Start($newProcess);
+    exit
 }
 
-# Helper function to set location to the User Profile directory
-function cuserprofile { Set-Location ~ }
-Set-Alias ~ cuserprofile -Option AllScope
+Function ClipPath ($file_name) {
+    Set-Clipboard(Resolve-Path $file_name).Path
+}
 
-# Helper function to show Unicode character
-function U
-{
-    param
-    (
-        [int] $Code
-    )
- 
-    if ((0 -le $Code) -and ($Code -le 0xFFFF))
-    {
-        return [char] $Code
+function Get-Env($name){
+    if ($name){
+        (Get-ChildItem env:$name).Value.split(';') | sort-object
     }
- 
-    if ((0x10000 -le $Code) -and ($Code -le 0x10FFFF))
-    {
-        return [char]::ConvertFromUtf32($Code)
+    else{
+        Get-ChildItem env:* | sort-object name
     }
-
-    throw "Invalid character code $Code"
 }
-
-# Ensure that Get-ChildItemColor is loaded
-Import-Module Get-ChildItemColor
-
-# Set l and ls alias to use the new Get-ChildItemColor cmdlets
-Set-Alias l Get-ChildItemColor -Option AllScope
-Set-Alias ls Get-ChildItemColorFormatWide -Option AllScope
-
-# Ensure posh-git is loaded
-Import-Module -Name posh-git
-
-# Ensure oh-my-posh is loaded
-Import-Module -Name oh-my-posh
-
-# Default the prompt to paradox
-Set-Theme paradox
-
-# Enhance Path
-$env:Path = "$env:Path;$Env:CMDER_ROOT\vendor\git-for-windows\usr\bin;"
