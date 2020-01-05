@@ -13,8 +13,9 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 Scoop is a wonderful way to manage all of your local software.
 ```powershell
 iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
-scoop install git aria2 mremoteng pshazz sharex telegram vim vscode
+scoop install git aria2
 scoop bucket add extras
+scoop install pshazz mremoteng sharex telegram vim vscode
 ```
 
 ### Install PowerShell Core/PowerShell Preview 
