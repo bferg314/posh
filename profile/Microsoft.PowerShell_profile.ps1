@@ -1,5 +1,6 @@
 # PowerShell Settings
 Set-PSReadLineOption -HistoryNoDuplicates:$True
+Set-PSReadLineOption -BellStyle None
 
 # Scripts on the Path
 $env:Path = "$env:Path;c:\git\posh\scripts;"
@@ -31,10 +32,18 @@ function mc ($dir) {
 
 # reload instance
 function rc {
-    $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
-    $newProcess.Arguments = "-nologo";
-    [System.Diagnostics.Process]::Start($newProcess);
-    exit
+    $parent = (Get-CimInstance win32_process |
+        Where-Object processid -eq (Get-CimInstance win32_process |
+        Where-Object processid -eq $pid).parentprocessid)
+    if ($parent.Name -eq "explorer.exe"){
+        $newProcess = new-object System.Diagnostics.ProcessStartInfo "PowerShell";
+        # $newProcess.Arguments = "-nologo";
+        [System.Diagnostics.Process]::Start($newProcess);
+        exit
+    }
+    else {
+        Write-Host "Windows Terminal is parent process, not closing..."
+    }
 }
 
 Function ClipPath ($file_name) {
@@ -48,4 +57,16 @@ function Get-Env($name){
     else{
         Get-ChildItem env:* | sort-object name
     }
+}
+
+function Search-Dir {
+    [CmdletBinding()]
+    param(
+        [Parameter()]
+        [string]$FileName,
+        [string]$Directory="C:\"
+    )
+
+    Write-Host "Searching $Directory for $FileName..."
+    return Get-ChildItem -Path "$Directory" -Filter "$FileName" -Recurse -ErrorAction SilentlyContinue -Force
 }
