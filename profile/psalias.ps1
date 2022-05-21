@@ -6,6 +6,8 @@ function QuitReplacement{
 
 Set-Alias -Name "x" -Value "QuitReplacement"
 
+Set-Alias -Name "rdn" -Value Resolve-DnsName
+
 # Custom Functions/Aliases
 # Easier Navigation: .., ..., ...., ....., and ~
 ${function:~} = { Set-Location ~ }
