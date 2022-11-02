@@ -3,16 +3,19 @@ param (
     [string]$AppPoolName = ""
 )
 
+$ModuleName = "WebAdministration"
+
 try {
-    if (get-module -name "IISAdministration") {
-        if (-not(get-module -listavailable | where-object { $_.Name -eq "IISAdministration" })) {
-            write-host "IISAdministration Module not available, exiting..." -foreground red
+
+    if (get-module -name $ModuleName) {
+        if (-not(get-module -listavailable | where-object { $_.Name -eq $ModuleName })) {
+            write-host "$ModuleName Module not available, exiting..." -foreground red
         }
         else {
             write-host ">> Attempting to restart My Website..." -foreground cyan
             write-host ""
         
-            import-module "IISAdministration"
+            import-module $ModuleName
             $poolState = (Get-WebAppPoolState $AppPoolName).value
             if ($poolState) {
                 Write-Host "$AppPoolName is currently $poolState"
@@ -24,6 +27,8 @@ try {
                 exit 1
             }
         }
+    } else {
+        Write-Host "Unable to find Module $ModuleName"
     }
 }
 catch {
