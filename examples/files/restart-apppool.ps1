@@ -1,9 +1,12 @@
 param (
     [parameter(mandatory = $true)]
-    [string]$AppPoolName = ""
+    [string]$AppPoolName,
+    [parameter(mandatory = $true)]
+    [ValidateSet("Check", "Reset", "Validate")]
+    [string]$Action
 )
 
-# $ModuleName = "IISAdministration"
+# $WebAdminModule = "IISAdministration"
 $WebAdminModule = "WebAdministration"
 
 try {
@@ -18,20 +21,34 @@ try {
         import-module $WebAdminModule
         $poolState = (Get-WebAppPoolState $AppPoolName).value
         if ($poolState) {
-            Write-Host "$AppPoolName is currently $poolState"
-            restart-webapppool $AppPoolName
-            Write-Host "$AppPoolName was succesfully restarted"
-            exit 0
+            if ($Action -eq "Check") {
+                Write-Host "$AppPoolName EXISTS. State is currently $poolState"
+                Exit 0
+            }
+            elseif ($Action -eq "Reset") {
+                Write-Host "$AppPoolName is currently $poolState"
+                Restart-WebAppPool $AppPoolName
+                Write-Host "$AppPoolName was succesfully restarted"
+                Exit 0
+            }
+            elseif ($Action -eq "Validate") {
+
+            }
+            else {
+                Write-Host "No valid action provided"
+                Exit 3
+            }
+
         }
         else {
             Write-Host "$AppPoolName is unavailable"
-            exit 2
+            Exit 2
         }
     }
 }
 catch {
     Write-Host "Exception :: $_"
-    exit 99
+    Exit 99
 }
 
 
