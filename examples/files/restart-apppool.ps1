@@ -1,21 +1,27 @@
 param (
     [parameter(mandatory = $true)]
-    [string]$AppPoolName,
+    [string]$apppoolname,
     [parameter(mandatory = $true)]
-    [ValidateSet("Check", "Reset", "Validate")]
-    [string]$Action
+    [ValidateSet("Check", "Reset", "Validate", "ForceSuccess", "ForceError")]
+    [string]$action
 )
 
-# $WebAdminModule = "IISAdministration"
-$WebAdminModule = "WebAdministration"
+if ($action -eq "ForceSuccess") {
+    Write-Host "Success return code was forced" -Foreground Green
+    Exit 0
+} elseif ($action -eq "ForceError") {
+    Write-Host "Failure return code was forced" -Foreground Red
+    Exit 999
+}
 
 try {
+    $WebAdminModule = "WebAdministration"
     if (-not(get-module -listavailable | where-object { $_.Name -eq $WebAdminModule })) {
         write-host "$WebAdminModule Module not available, exiting..." -foreground red
         exit 1
     }
     else {
-        write-host ">> Attempting to restart My Website..." -foreground cyan
+        write-host ">> Attempting to restart AppPool $AppPoolName..." -foreground cyan
         write-host ""
         
         import-module $WebAdminModule
@@ -32,7 +38,12 @@ try {
                 Exit 0
             }
             elseif ($Action -eq "Validate") {
-
+                Get-WmiObject Win32_Process -Filter "name = 'w3wp.exe'" | 
+                Select-Object Name, @{"name" = "ApplicationPool"; expression = {
+                    (($_).CommandLine).split('"')[1] }
+                }, @{"name" = "Starttime"; expression = { $_.ConvertToDateTime($_.CreationDate)
+                    }
+                } | Sort-Object Starttime -Descending         
             }
             else {
                 Write-Host "No valid action provided"
@@ -50,6 +61,5 @@ catch {
     Write-Host "Exception :: $_"
     Exit 99
 }
-
 
 
