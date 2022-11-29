@@ -22,7 +22,7 @@ try {
         exit 1
     }
     else {
-        write-host ">> Attempting AppPool actions..." -foreground cyan
+        write-host ">> Attempting AppPool action $action on $apppoolname..." -foreground cyan
         write-host ""
         
         import-module $WebAdminModule
@@ -41,6 +41,7 @@ try {
             elseif ($Action -eq "Validate") {
             }
             elseif ($Action -eq "View") {
+                Write-Host "Looking for active app pools..."
                 $result = Get-WmiObject Win32_Process -Filter "name = 'w3wp.exe'" | 
                 Select-Object Name, @{"name" = "ApplicationPool"; expression = {
                     (($_).CommandLine).split('"')[1] }
