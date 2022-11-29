@@ -2,14 +2,15 @@ param (
     [parameter(mandatory = $true)]
     [string]$apppoolname,
     [parameter(mandatory = $true)]
-    [ValidateSet("Check", "Reset", "Validate", "ForceSuccess", "ForceError")]
+    [ValidateSet("Check", "Reset", "Validate", "View", "ForceSuccess", "ForceError")]
     [string]$action
 )
 
 if ($action -eq "ForceSuccess") {
     Write-Host "Success return code was forced" -Foreground Green
     Exit 0
-} elseif ($action -eq "ForceError") {
+}
+elseif ($action -eq "ForceError") {
     Write-Host "Failure return code was forced" -Foreground Red
     Exit 999
 }
@@ -21,7 +22,7 @@ try {
         exit 1
     }
     else {
-        write-host ">> Attempting to restart AppPool $AppPoolName..." -foreground cyan
+        write-host ">> Attempting AppPool actions..." -foreground cyan
         write-host ""
         
         import-module $WebAdminModule
@@ -38,12 +39,19 @@ try {
                 Exit 0
             }
             elseif ($Action -eq "Validate") {
-                Get-WmiObject Win32_Process -Filter "name = 'w3wp.exe'" | 
+            }
+            elseif ($Action -eq "View") {
+                $result = Get-WmiObject Win32_Process -Filter "name = 'w3wp.exe'" | 
                 Select-Object Name, @{"name" = "ApplicationPool"; expression = {
                     (($_).CommandLine).split('"')[1] }
                 }, @{"name" = "Starttime"; expression = { $_.ConvertToDateTime($_.CreationDate)
                     }
-                } | Sort-Object Starttime -Descending         
+                } | Sort-Object Starttime -Descending   
+                if ($result) {
+                    Write-Host $result
+                } else {
+                    Write-Host "No app pools running"
+                }      
             }
             else {
                 Write-Host "No valid action provided"
