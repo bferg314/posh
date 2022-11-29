@@ -48,7 +48,7 @@ try {
                     }
                 } | Sort-Object Starttime -Descending   
                 if ($result) {
-                    Write-Host $result
+                    $result
                 } else {
                     Write-Host "No app pools running"
                 }      
