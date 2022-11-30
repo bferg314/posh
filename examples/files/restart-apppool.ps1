@@ -33,13 +33,16 @@ try {
                 Exit 0
             }
             elseif ($Action -eq "Reset") {
+                Write-Host "$AppPoolName is currently $poolState"
                 if ($poolState -eq "stopped") {
                     Start-WebAppPool $AppPoolName
+                    Write-Host "$AppPoolName was succesfully started"
+                    Exit 0
+                } else {
+                    Restart-WebAppPool $AppPoolName
+                    Write-Host "$AppPoolName was succesfully restarted"
+                    Exit 0
                 }
-                Write-Host "$AppPoolName is currently $poolState"
-                Restart-WebAppPool $AppPoolName
-                Write-Host "$AppPoolName was succesfully restarted"
-                Exit 0
             }
             elseif ($Action -eq "Validate") {
                 Write-Host "Checking if $AppPoolName was restarted recently..."
