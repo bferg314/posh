@@ -33,6 +33,9 @@ try {
                 Exit 0
             }
             elseif ($Action -eq "Reset") {
+                if ($poolState -eq "stopped") {
+                    Start-WebAppPool $AppPoolName
+                }
                 Write-Host "$AppPoolName is currently $poolState"
                 Restart-WebAppPool $AppPoolName
                 Write-Host "$AppPoolName was succesfully restarted"
@@ -47,6 +50,7 @@ try {
                 }, @{"name" = "Starttime"; expression = { $_.ConvertToDateTime($_.CreationDate)
                     }
                 } | Where-Object -Property ApplicationPool -EQ $AppPoolName
+
                 if ($result) {
                     if ($result.Starttime -gt $tenMinutesAgo) {
                         Write-Host "The $AppPoolName app pool process is LESS than 10 minutes old $($result.Starttime)"
