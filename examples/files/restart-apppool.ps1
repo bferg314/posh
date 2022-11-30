@@ -7,22 +7,22 @@ param (
 )
 
 if ($action -eq "ForceSuccess") {
-    Write-Host "Success return code was forced" -Foreground Green
+    Write-Host "Success return code was forced" -ForegroundColor Green
     Exit 0
 }
 elseif ($action -eq "ForceError") {
-    Write-Host "Failure return code was forced" -Foreground Red
+    Write-Host "Failure return code was forced" -ForegroundColor Red
     Exit 999
 }
 
 try {
     $WebAdminModule = "WebAdministration"
     if (-not(get-module -listavailable | where-object { $_.Name -eq $WebAdminModule })) {
-        write-host "$WebAdminModule Module not available, exiting..." -foreground red
+        write-host "$WebAdminModule Module not available, exiting..." -ForegroundColor red
         exit 1
     }
     else {
-        write-host ">> Attempting AppPool action $action on $apppoolname..." -foreground cyan
+        write-host ">> Attempting AppPool action $action on $apppoolname..." -ForegroundColor cyan
         write-host ""
         
         import-module $WebAdminModule
@@ -83,19 +83,19 @@ try {
                 }      
             }
             else {
-                Write-Host "No valid action provided"
+                Write-Host "No valid action provided" -ForegroundColor Red
                 Exit 3
             }
 
         }
         else {
-            Write-Host "$AppPoolName is unavailable"
+            Write-Host "$AppPoolName is unavailable" -ForegroundColor Red
             Exit 2
         }
     }
 }
 catch {
-    Write-Host "Exception :: $_"
+    Write-Host "Exception :: $_" -ForegroundColor Red
     Exit 99
 }
 
