@@ -39,6 +39,26 @@ try {
                 Exit 0
             }
             elseif ($Action -eq "Validate") {
+                Write-Host "Checking if $AppPoolName was restarted recently..."
+                $tenMinutesAgo = (Get-Date).AddMinutes(-10)
+                $result = Get-WmiObject Win32_Process -Filter "name = 'w3wp.exe'" | 
+                Select-Object Name, @{"name" = "ApplicationPool"; expression = {
+                    (($_).CommandLine).split('"')[1] }
+                }, @{"name" = "Starttime"; expression = { $_.ConvertToDateTime($_.CreationDate)
+                    }
+                } | Where-Object -Property ApplicationPool -EQ $AppPoolName
+                if ($result) {
+                    if ($result.Starttime -gt $tenMinutesAgo) {
+                        Write-Host "The $AppPoolName app pool process is LESS than 10 minutes old $($result.Starttime)"
+                        Exit 0
+                    } else {
+                        Write-Host "The $AppPoolName app pool process is MORE than 10 minutes old $($result.Starttime)"
+                        Exit 4
+                    }
+                } else {
+                    Write-Host "The $AppPoolName app pool process was not found"
+                    Exit 4
+                }
             }
             elseif ($Action -eq "View") {
                 Write-Host "Looking for active app pools..."
@@ -47,7 +67,8 @@ try {
                     (($_).CommandLine).split('"')[1] }
                 }, @{"name" = "Starttime"; expression = { $_.ConvertToDateTime($_.CreationDate)
                     }
-                } | Sort-Object Starttime -Descending   
+                } | Sort-Object Starttime -Descending  
+
                 if ($result) {
                     $result
                 } else {
