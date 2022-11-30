@@ -56,14 +56,14 @@ try {
 
                 if ($result) {
                     if ($result.Starttime -gt $tenMinutesAgo) {
-                        Write-Host "The $AppPoolName app pool process is LESS than 10 minutes old $($result.Starttime)"
+                        Write-Host "The $AppPoolName app pool process is LESS than 10 minutes old $($result.Starttime)" -ForegroundColor Green
                         Exit 0
                     } else {
-                        Write-Host "The $AppPoolName app pool process is MORE than 10 minutes old $($result.Starttime)"
+                        Write-Host "The $AppPoolName app pool process is MORE than 10 minutes old $($result.Starttime)" -ForegroundColor DarkYellow
                         Exit 4
                     }
                 } else {
-                    Write-Host "The $AppPoolName app pool process was not found"
+                    Write-Host "The $AppPoolName app pool process was not found" -ForegroundColor DarkYellow
                     Exit 4
                 }
             }
@@ -79,7 +79,7 @@ try {
                 if ($result) {
                     $result
                 } else {
-                    Write-Host "No app pools running"
+                    Write-Host "No app pools running" -ForegroundColor DarkYellow
                 }      
             }
             else {
