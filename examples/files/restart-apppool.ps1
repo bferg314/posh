@@ -18,14 +18,14 @@ elseif ($action -eq "ForceError") {
 try {
     $WebAdminModule = "WebAdministration"
     if (-not(get-module -listavailable | where-object { $_.Name -eq $WebAdminModule })) {
-        write-host "$WebAdminModule Module not available, exiting..." -ForegroundColor red
+        Write-Host "$WebAdminModule Module not available, exiting..." -ForegroundColor red
         exit 1
     }
     else {
-        write-host ">> Attempting AppPool action $action on $apppoolname..." -ForegroundColor cyan
-        write-host ""
+        Write-Host ">> Attempting AppPool action $action on $apppoolname..." -ForegroundColor cyan
+        Write-Host ""
         
-        import-module $WebAdminModule
+        Import-Module $WebAdminModule
         $poolState = (Get-WebAppPoolState $AppPoolName).value
         if ($poolState) {
             if ($Action -eq "Check") {
@@ -36,11 +36,11 @@ try {
                 Write-Host "$AppPoolName is currently $poolState"
                 if ($poolState -eq "stopped") {
                     Start-WebAppPool $AppPoolName
-                    Write-Host "$AppPoolName was succesfully started"
+                    Write-Host "$AppPoolName was succesfully Started"
                     Exit 0
                 } else {
                     Restart-WebAppPool $AppPoolName
-                    Write-Host "$AppPoolName was succesfully restarted"
+                    Write-Host "$AppPoolName was succesfully Restarted"
                     Exit 0
                 }
             }
@@ -56,10 +56,10 @@ try {
 
                 if ($result) {
                     if ($result.Starttime -gt $tenMinutesAgo) {
-                        Write-Host "The $AppPoolName app pool process is LESS than 10 minutes old $($result.Starttime)" -ForegroundColor Green
+                        Write-Host "The $AppPoolName app pool process is LESS than 10 minutes old. Last Restart: $($result.Starttime)" -ForegroundColor Green
                         Exit 0
                     } else {
-                        Write-Host "The $AppPoolName app pool process is MORE than 10 minutes old $($result.Starttime)" -ForegroundColor DarkYellow
+                        Write-Host "The $AppPoolName app pool process is MORE than 10 minutes old. Last Restart: $($result.Starttime)" -ForegroundColor DarkYellow
                         Exit 4
                     }
                 } else {
@@ -86,7 +86,6 @@ try {
                 Write-Host "No valid action provided" -ForegroundColor Red
                 Exit 3
             }
-
         }
         else {
             Write-Host "$AppPoolName is unavailable" -ForegroundColor Red
