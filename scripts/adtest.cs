@@ -1,5 +1,6 @@
 using System;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 
 class Program
@@ -7,12 +8,20 @@ class Program
     static void Main()
     {
         string groupName = "YourGroupName";
-        GetUsersInGroup(groupName);
+        string domainController = GetCurrentDomainController();
+        GetUsersInGroup(groupName, domainController);
     }
 
-    static void GetUsersInGroup(string groupName)
+    static string GetCurrentDomainController()
     {
-        using (var context = new PrincipalContext(ContextType.Domain, null, "ldaps://YourDomainController:636", ContextOptions.SimpleBind))
+        Domain domain = Domain.GetCurrentDomain();
+        DomainController domainController = domain.FindDomainController();
+        return domainController.Name;
+    }
+
+    static void GetUsersInGroup(string groupName, string domainController)
+    {
+        using (var context = new PrincipalContext(ContextType.Domain, null, "ldaps://" + domainController + ":636", ContextOptions.SimpleBind))
         {
             using (var group = GroupPrincipal.FindByIdentity(context, groupName))
             {
