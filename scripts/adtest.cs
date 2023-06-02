@@ -1,6 +1,6 @@
 using System;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 
 class Program
@@ -14,13 +14,10 @@ class Program
 
     static string GetCurrentDomainController()
     {
-        using (var domainContext = new DirectoryContext(DirectoryContextType.Domain))
+        using (var rootDSE = new DirectoryEntry("LDAP://RootDSE"))
         {
-            using (var domain = Domain.GetDomain(domainContext))
-            {
-                var domainController = domain.FindDomainController();
-                return domainController.Name;
-            }
+            string domainController = rootDSE.Properties["dnsHostName"].Value.ToString();
+            return domainController;
         }
     }
 
