@@ -1,6 +1,5 @@
 using System;
 using System.DirectoryServices.AccountManagement;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 
 class Program
@@ -14,14 +13,18 @@ class Program
 
     static string GetCurrentDomainController()
     {
-        Domain domain = Domain.GetCurrentDomain();
-        DomainController domainController = domain.FindDomainController();
-        return domainController.Name;
+        string domainName = Environment.UserDomainName;
+        using (var domainContext = new PrincipalContext(ContextType.Domain))
+        using (var domain = Domain.GetDomain(domainContext))
+        {
+            var domainController = domain.FindDomainController();
+            return domainController.Name;
+        }
     }
 
     static void GetUsersInGroup(string groupName, string domainController)
     {
-        using (var context = new PrincipalContext(ContextType.Domain, null, "ldaps://" + domainController + ":636", ContextOptions.SimpleBind))
+        using (var context = new PrincipalContext(ContextType.Domain, domainController, "ldaps://" + domainController + ":636", ContextOptions.SimpleBind))
         {
             using (var group = GroupPrincipal.FindByIdentity(context, groupName))
             {
