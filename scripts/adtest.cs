@@ -1,5 +1,6 @@
 using System;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 
 class Program
@@ -13,12 +14,13 @@ class Program
 
     static string GetCurrentDomainController()
     {
-        string domainName = Environment.UserDomainName;
-        using (var domainContext = new PrincipalContext(ContextType.Domain))
-        using (var domain = Domain.GetDomain(domainContext))
+        using (var domainContext = new DirectoryContext(DirectoryContextType.Domain))
         {
-            var domainController = domain.FindDomainController();
-            return domainController.Name;
+            using (var domain = Domain.GetDomain(domainContext))
+            {
+                var domainController = domain.FindDomainController();
+                return domainController.Name;
+            }
         }
     }
 
