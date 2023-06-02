@@ -12,7 +12,7 @@ class Program
 
     static void GetUsersInGroup(string groupName)
     {
-        using (var context = new PrincipalContext(ContextType.Domain))
+        using (var context = new PrincipalContext(ContextType.Domain, null, "ldaps://YourDomainController:636", ContextOptions.SimpleBind))
         {
             using (var group = GroupPrincipal.FindByIdentity(context, groupName))
             {
